@@ -64,8 +64,22 @@ button:hover {
   height: 100%;
 }
 
+.statusBtn.green-check {
+  color: #00ff88;
+  font-weight: bold;
+}
+
+.statusBtn.red-x {
+  color: #ff4d4d;
+  font-weight: bold;
+}
+
 .col-name {
   min-width: 200px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: flex-start;
 }
 
 .col-small {
@@ -100,3 +114,4 @@ button:hover {
   display: none;
   margin-top: 10px;
 }
+
