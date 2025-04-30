@@ -64,22 +64,16 @@ button:hover {
   height: 100%;
 }
 
-.statusBtn.green-check {
-  color: #00ff88;
-  font-weight: bold;
+.green-check {
+  color: lightgreen;
 }
 
-.statusBtn.red-x {
-  color: #ff4d4d;
-  font-weight: bold;
+.red-x {
+  color: red;
 }
 
 .col-name {
   min-width: 200px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  justify-content: flex-start;
 }
 
 .col-small {
