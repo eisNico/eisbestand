@@ -71,13 +71,13 @@ function addRow() {
   updateDeleteDropdown();
   saveData();
 }
-
-function createRow(name, laden, lager) {
+function createRow(name, laden, lager, status = "⬜") {
   const tr = document.createElement("tr");
   tr.innerHTML = `
     <td><input class="name" type="text" value="${name}"></td>
-    <td><input class="laden" type="number" value="${laden}"></td>
-    <td><input class="lager" type="number" value="${lager}"></td>
+    <td><input class="laden" type="number" value="${laden}" onchange="saveData()"></td>
+    <td><input class="lager" type="number" value="${lager}" onchange="saveData()"></td>
+    <td><button class="statusBtn" onclick="cycleStatus(this)">${status}</button></td>
   `;
   return tr;
 }
