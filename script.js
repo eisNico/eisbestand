@@ -33,11 +33,11 @@ function saveData() {
   const data = [];
   const rows = document.querySelectorAll("#tableBody tr");
   rows.forEach(row => {
+    const status = row.querySelector(".statusBtn").textContent;
     const name = row.querySelector(".name").value;
     const laden = row.querySelector(".laden").value;
     const lager = row.querySelector(".lager").value;
-    const status = row.querySelector(".statusBtn").textContent;
-    data.push({ name, laden, lager, status });
+    data.push({ status, name, laden, lager });
   });
   localStorage.setItem(storageKey, JSON.stringify(data));
   showSaveNotice();
@@ -52,35 +52,34 @@ function loadData() {
   if (saved) {
     data = JSON.parse(saved);
   } else {
-    data = defaultSorten.map(name => ({ name, laden: "", lager: "", status: "⬜" }));
+    data = defaultSorten.map(name => ({ status: "⬜", name, laden: "", lager: "" }));
     localStorage.setItem(storageKey, JSON.stringify(data));
   }
 
   data.forEach(entry => {
-    const row = createRow(entry.name, entry.laden, entry.lager, entry.status || "⬜");
+    const row = createRow(entry.status, entry.name, entry.laden, entry.lager);
     tableBody.appendChild(row);
   });
 
   updateDeleteDropdown();
-  applyFilter();
 }
 
 function addRow() {
   const tableBody = document.getElementById("tableBody");
-  const row = createRow("", "", "", "⬜");
+  const row = createRow("⬜", "", "", "");
   tableBody.appendChild(row);
   updateDeleteDropdown();
   saveData();
-  applyFilter();
 }
 
-function createRow(name, laden, lager, status = "⬜") {
+function createRow(status, name, laden, lager) {
   const tr = document.createElement("tr");
+  const statusClass = status === "✔️" ? "green-check" : "";
   tr.innerHTML = `
+    <td><button class="statusBtn ${statusClass}" onclick="cycleStatus(this)">${status}</button></td>
     <td><input class="name" type="text" value="${name}" onchange="saveData()"></td>
     <td><input class="laden" type="number" value="${laden}" onchange="saveData()"></td>
     <td><input class="lager" type="number" value="${lager}" onchange="saveData()"></td>
-    <td><button class="statusBtn" onclick="cycleStatus(this)">${status}</button></td>
   `;
   return tr;
 }
@@ -89,18 +88,12 @@ function cycleStatus(button) {
   const states = ["⬜", "❌", "✔️"];
   const current = button.textContent;
   const nextIndex = (states.indexOf(current) + 1) % states.length;
-  button.textContent = states[nextIndex];
-  saveData();
-  applyFilter();
-}
+  const next = states[nextIndex];
+  button.textContent = next;
 
-function applyFilter() {
-  const filter = document.getElementById("statusFilter")?.value || "alle";
-  const rows = document.querySelectorAll("#tableBody tr");
-  rows.forEach(row => {
-    const status = row.querySelector(".statusBtn").textContent;
-    row.style.display = (filter === "alle" || status === filter) ? "" : "none";
-  });
+  button.classList.toggle("green-check", next === "✔️");
+
+  saveData();
 }
 
 function showDeleteModal() {
@@ -140,5 +133,3 @@ function showSaveNotice() {
   notice.style.display = "block";
   setTimeout(() => (notice.style.display = "none"), 1500);
 }
-
-
