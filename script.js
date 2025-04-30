@@ -48,24 +48,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function loadData() {
-  const saved = localStorage.getItem('eistabelle');
-  if (saved) {
-    const data = JSON.parse(saved);
-    data.forEach(row => addRow(row.sorte, row.laden, row.lager));
-  } else {
-    // 👇 Diese Sorten erscheinen nur beim allerersten Laden
-    const defaults = [
-      { sorte: "Schokolade", laden: "", lager: "" },
-      { sorte: "Vanille", laden: "", lager: "" },
-      { sorte: "Erdbeere", laden: "", lager: "" },
-      { sorte: "Himmelblau", laden: "", lager: "" },
-      { sorte: "Stracciatella", laden: "", lager: "" },
-      { sorte: "Kindle", laden: "", lager: "" },
-      { sorte: "Mango", laden: "", lager: "" }
-    ];
-    defaults.forEach(e => addRow(e.sorte, e.laden, e.lager));
+    const saved = localStorage.getItem('eistabelle');
+    if (saved) {
+      const data = JSON.parse(saved);
+      data.forEach(row => addRow(row.sorte, row.laden, row.lager));
+    }
   }
-}
 
   window.addRow = function(sorte = '', laden = '', lager = '') {
     const row = document.createElement('tr');
@@ -112,4 +100,5 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   window.saveData = saveData;
+}
 });
