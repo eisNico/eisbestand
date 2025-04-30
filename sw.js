@@ -1,11 +1,12 @@
-
 const CACHE_NAME = 'eistabelle-cache-v1';
 const URLS_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/style.css',
-  '/script.js',
-  '/manifest.json'
+  './',
+  './index.html',
+  './style.css',
+  './script.js',
+  './manifest.json',
+  './icons/icon-192.png',
+  './icons/icon-512.png'
 ];
 
 self.addEventListener('install', event => {
@@ -13,5 +14,8 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('fetch', event => {
-  event.respondWith(caches.match(event.request).then(response => response || fetch(event.request)));
+  event.respondWith(
+    caches.match(event.request, { ignoreSearch: true })
+      .then(response => response || fetch(event.request))
+  );
 });
