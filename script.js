@@ -74,7 +74,9 @@ function addRow() {
 
 function createRow(status, name, laden, lager) {
   const tr = document.createElement("tr");
-  const statusClass = status === "✔️" ? "green-check" : "";
+  let statusClass = "";
+  if (status === "✔️") statusClass = "green-check";
+  if (status === "❌") statusClass = "red-x";
   tr.innerHTML = `
     <td><button class="statusBtn ${statusClass}" onclick="cycleStatus(this)">${status}</button></td>
     <td><input class="name" type="text" value="${name}" onchange="saveData()"></td>
@@ -91,7 +93,12 @@ function cycleStatus(button) {
   const next = states[nextIndex];
   button.textContent = next;
 
-  button.classList.toggle("green-check", next === "✔️");
+  button.classList.remove("green-check", "red-x");
+  if (next === "✔️") {
+    button.classList.add("green-check");
+  } else if (next === "❌") {
+    button.classList.add("red-x");
+  }
 
   saveData();
 }
