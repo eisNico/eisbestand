@@ -25,19 +25,18 @@ function showApp() {
   document.getElementById("loginScreen").style.display = "none";
   document.getElementById("app").style.display = "block";
   loadData();
-  document.activeElement.blur();
-  window.scrollTo(0, 0);
+  document.activeElement.blur(); // Tastatur schließen
+  window.scrollTo(0, 0); // nach oben scrollen
 }
 
 function saveData() {
   const data = [];
   const rows = document.querySelectorAll("#tableBody tr");
   rows.forEach(row => {
-    const status = row.querySelector(".statusBtn").textContent;
     const name = row.querySelector(".name").value;
     const laden = row.querySelector(".laden").value;
     const lager = row.querySelector(".lager").value;
-    data.push({ status, name, laden, lager });
+    data.push({ name, laden, lager });
   });
   localStorage.setItem(storageKey, JSON.stringify(data));
   showSaveNotice();
@@ -52,12 +51,12 @@ function loadData() {
   if (saved) {
     data = JSON.parse(saved);
   } else {
-    data = defaultSorten.map(name => ({ status: "⬜", name, laden: "", lager: "" }));
+    data = defaultSorten.map(name => ({ name, laden: "", lager: "" }));
     localStorage.setItem(storageKey, JSON.stringify(data));
   }
 
   data.forEach(entry => {
-    const row = createRow(entry.status, entry.name, entry.laden, entry.lager);
+    const row = createRow(entry.name, entry.laden, entry.lager);
     tableBody.appendChild(row);
   });
 
@@ -66,41 +65,20 @@ function loadData() {
 
 function addRow() {
   const tableBody = document.getElementById("tableBody");
-  const row = createRow("⬜", "", "", "");
+  const row = createRow("", "", "");
   tableBody.appendChild(row);
   updateDeleteDropdown();
   saveData();
 }
 
-function createRow(status, name, laden, lager) {
+function createRow(name, laden, lager) {
   const tr = document.createElement("tr");
-  let statusClass = "";
-  if (status === "✔️") statusClass = "green-check";
-  if (status === "❌") statusClass = "red-x";
-  tr.innerHTML = `
-    <td><button class="statusBtn ${statusClass}" onclick="cycleStatus(this)">${status}</button></td>
-    <td><input class="name" type="text" value="${name}" onchange="saveData()"></td>
-    <td><input class="laden" type="number" value="${laden}" onchange="saveData()"></td>
-    <td><input class="lager" type="number" value="${lager}" onchange="saveData()"></td>
-  `;
+  tr.innerHTML = 
+    <td><input class="name" type="text" value="${name}"></td>
+    <td><input class="laden" type="number" value="${laden}"></td>
+    <td><input class="lager" type="number" value="${lager}"></td>
+  ;
   return tr;
-}
-
-function cycleStatus(button) {
-  const states = ["⬜", "❌", "✔️"];
-  const current = button.textContent;
-  const nextIndex = (states.indexOf(current) + 1) % states.length;
-  const next = states[nextIndex];
-  button.textContent = next;
-
-  button.classList.remove("green-check", "red-x");
-  if (next === "✔️") {
-    button.classList.add("green-check");
-  } else if (next === "❌") {
-    button.classList.add("red-x");
-  }
-
-  saveData();
 }
 
 function showDeleteModal() {
@@ -137,6 +115,9 @@ function deleteRow() {
 
 function showSaveNotice() {
   const notice = document.getElementById("saveNotice");
+  notice.style.display = "block";
+  setTimeout(() => (notice.style.display = "none"), 1500);
+}
   notice.style.display = "block";
   setTimeout(() => (notice.style.display = "none"), 1500);
 }
