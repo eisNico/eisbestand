@@ -1,4 +1,3 @@
-
 const correctPassword = "eisp1";
 const storageKey = "eistabelleData";
 const defaultSorten = [
@@ -26,8 +25,8 @@ function showApp() {
   document.getElementById("loginScreen").style.display = "none";
   document.getElementById("app").style.display = "block";
   loadData();
-  document.activeElement.blur(); // Tastatur schließen
-  window.scrollTo(0, 0); // nach oben scrollen
+  document.activeElement.blur();
+  window.scrollTo(0, 0);
 }
 
 function saveData() {
@@ -37,7 +36,8 @@ function saveData() {
     const name = row.querySelector(".name").value;
     const laden = row.querySelector(".laden").value;
     const lager = row.querySelector(".lager").value;
-    data.push({ name, laden, lager });
+    const status = row.querySelector(".statusBtn").textContent;
+    data.push({ name, laden, lager, status });
   });
   localStorage.setItem(storageKey, JSON.stringify(data));
   showSaveNotice();
@@ -52,34 +52,55 @@ function loadData() {
   if (saved) {
     data = JSON.parse(saved);
   } else {
-    data = defaultSorten.map(name => ({ name, laden: "", lager: "" }));
+    data = defaultSorten.map(name => ({ name, laden: "", lager: "", status: "⬜" }));
     localStorage.setItem(storageKey, JSON.stringify(data));
   }
 
   data.forEach(entry => {
-    const row = createRow(entry.name, entry.laden, entry.lager);
+    const row = createRow(entry.name, entry.laden, entry.lager, entry.status || "⬜");
     tableBody.appendChild(row);
   });
 
   updateDeleteDropdown();
+  applyFilter();
 }
 
 function addRow() {
   const tableBody = document.getElementById("tableBody");
-  const row = createRow("", "", "");
+  const row = createRow("", "", "", "⬜");
   tableBody.appendChild(row);
   updateDeleteDropdown();
   saveData();
+  applyFilter();
 }
+
 function createRow(name, laden, lager, status = "⬜") {
   const tr = document.createElement("tr");
   tr.innerHTML = `
-    <td><input class="name" type="text" value="${name}"></td>
+    <td><input class="name" type="text" value="${name}" onchange="saveData()"></td>
     <td><input class="laden" type="number" value="${laden}" onchange="saveData()"></td>
     <td><input class="lager" type="number" value="${lager}" onchange="saveData()"></td>
     <td><button class="statusBtn" onclick="cycleStatus(this)">${status}</button></td>
   `;
   return tr;
+}
+
+function cycleStatus(button) {
+  const states = ["⬜", "❌", "✔️"];
+  const current = button.textContent;
+  const nextIndex = (states.indexOf(current) + 1) % states.length;
+  button.textContent = states[nextIndex];
+  saveData();
+  applyFilter();
+}
+
+function applyFilter() {
+  const filter = document.getElementById("statusFilter")?.value || "alle";
+  const rows = document.querySelectorAll("#tableBody tr");
+  rows.forEach(row => {
+    const status = row.querySelector(".statusBtn").textContent;
+    row.style.display = (filter === "alle" || status === filter) ? "" : "none";
+  });
 }
 
 function showDeleteModal() {
@@ -119,3 +140,5 @@ function showSaveNotice() {
   notice.style.display = "block";
   setTimeout(() => (notice.style.display = "none"), 1500);
 }
+
+
