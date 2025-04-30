@@ -1,5 +1,5 @@
 
-const correctPassword = "1234";
+const correctPassword = "eisp1";
 const storageKey = "eistabelleData";
 const defaultSorten = [
   "Schokolade", "Vanille", "Erdbeer", "Himmelblau", "Lila",
